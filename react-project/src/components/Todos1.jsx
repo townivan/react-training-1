@@ -2,6 +2,7 @@ import Todos1Item from "./Todos1Item"
 import Todos1ItemB from "./Todos1ItemB"
 import './Todos.css'
 import { useState } from "react"
+import Todos1Input from "./Todos1Input"
 
 export default () => {
     const styles = {
@@ -9,29 +10,37 @@ export default () => {
             backgroundColor: 'pink'
         }
     }
-    const initialTodos = [{id:0, name:'aaa', active:false}, {id:1, name:'bbb', active:true}, {id:2, name:'ccc', active:false}]
+    const initialTodos = [{id:0, name:'aaa'}, {id:1, name:'bbb'}, {id:2, name:'ccc'}]
     const [todos, setTodos] = useState(initialTodos)
+    const [input, setInput] = useState('')
 
-    const handleClick3 = (clickedTodo) => {
-        //console.log('e:', e)
-        console.log('clickedTodo:', clickedTodo )
+    const handleAddItem = () =>{
+        console.log('welcome to handleAddItem()...')
+        console.log('input:', input)
+        const newTodo = {};
+        newTodo.id = crypto.randomUUID()
+        newTodo.name = input
+        newTodo.active = false
+        setTodos([...todos, newTodo])
+    }
 
-        setTodos([...todos].map((tt) => {
-            clickedTodo.id === tt.id ? tt.active = true : tt.active = false
-            return tt
-        }))
+    const handleDeleteItem = (clickedTodo) => {
+        console.log('delete this one:', clickedTodo)
+        setTodos (todos => {
+            return todos.filter(todo => todo.id !== clickedTodo.id)
+        })
     }
 
     return (
         <>
-            <h1>Todos1:</h1>
-            {/* <ul> */}
+            <h1>Todos1: {input}</h1>
+            <Todos1Input handleAddItem={() => (handleAddItem())} input={input} setInput={setInput} />
             {
                 todos.map((todo) => (
-                    <Todos1ItemB key={todo.id} id={todo.id} name={todo.name} checked={todo.active} onChange={() => (handleClick3(todo))} className={todo.active ? 'imselected' : null}></Todos1ItemB>
+                    <Todos1ItemB key={todo.id} id={todo.id} name={todo.name} handleDeleteItem={() => (handleDeleteItem(todo))}></Todos1ItemB>
                 ))
             }
-            {/* </ul> */}
+
         </>
     )
 }
